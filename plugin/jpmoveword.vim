@@ -105,14 +105,14 @@ function! s:JpMoveW(cmd, count)
     let regxp = '\('.space.'\+\zs\)\|'.'\('.spaceR.'\zs'.space.'\+'.'\)\|\('.separator.'\+\)'.'\|$'
   endif
   if cmd =~ 'x[WBE]'
-    normal!gv
+    normal! gv
     let lastPos = getpos('.')
     normal! o
     let firstPos = getpos('.')
     normal! o
     normal! v
     call setpos('.', lastPos)
- endif
+  endif
 
   let saved_ve = &virtualedit
   if stop_eol == 2
