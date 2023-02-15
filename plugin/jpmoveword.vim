@@ -61,20 +61,20 @@ function! s:jpmovewordKeymap()
   endif
 endfunction
 
-nnoremap <silent> <Plug>JpMove_nW :<C-U>call <SID>JpMoveW('nW', v:count1)<CR>
-onoremap <silent> <Plug>JpMove_oW :<C-U>call <SID>JpMoveW('oW', v:count1)<CR>
-xnoremap <silent> <Plug>JpMove_xW :<C-U>call <SID>JpMoveW('xW', v:count1)<CR>
-nnoremap <silent> <Plug>JpMove_nB :<C-U>call <SID>JpMoveW('nB', v:count1)<CR>
-onoremap <silent> <Plug>JpMove_oB :<C-U>call <SID>JpMoveW('oB', v:count1)<CR>
-xnoremap <silent> <Plug>JpMove_xB :<C-U>call <SID>JpMoveW('xB', v:count1)<CR>
-nnoremap <silent> <Plug>JpMove_nE :<C-U>call <SID>JpMoveW('nE', v:count1)<CR>
-onoremap <silent> <Plug>JpMove_oE :<C-U>call <SID>JpMoveW('oE', v:count1)<CR>
-xnoremap <silent> <Plug>JpMove_xE :<C-U>call <SID>JpMoveW('xE', v:count1)<CR>
+nnoremap <silent> <Plug>JpMove_nW <Cmd>call <SID>JpMoveW('nW', v:count1)<CR>
+onoremap <silent> <Plug>JpMove_oW <Cmd>call <SID>JpMoveW('oW', v:count1)<CR>
+xnoremap <silent> <Plug>JpMove_xW <Cmd>call <SID>JpMoveW('xW', v:count1)<CR>
+nnoremap <silent> <Plug>JpMove_nB <Cmd>call <SID>JpMoveW('nB', v:count1)<CR>
+onoremap <silent> <Plug>JpMove_oB <Cmd>call <SID>JpMoveW('oB', v:count1)<CR>
+xnoremap <silent> <Plug>JpMove_xB <Cmd>call <SID>JpMoveW('xB', v:count1)<CR>
+nnoremap <silent> <Plug>JpMove_nE <Cmd>call <SID>JpMoveW('nE', v:count1)<CR>
+onoremap <silent> <Plug>JpMove_oE <Cmd>call <SID>JpMoveW('oE', v:count1)<CR>
+xnoremap <silent> <Plug>JpMove_xE <Cmd>call <SID>JpMoveW('xE', v:count1)<CR>
 
-onoremap <silent> <Plug>JpTextObjctIon :<C-U>call <SID>JpObject('o', 'i', v:count1)<CR>
-xnoremap <silent> <Plug>JpTextObjctIxn :<C-U>call <SID>JpObject('x', 'i', v:count1)<CR>
-onoremap <silent> <Plug>JpTextObjctAon :<C-U>call <SID>JpObject('o', 'a', v:count1)<CR>
-xnoremap <silent> <Plug>JpTextObjctAxn :<C-U>call <SID>JpObject('x', 'a', v:count1)<CR>
+onoremap <silent> <Plug>JpTextObjctIon <Cmd>call <SID>JpObject('o', 'i', v:count1)<CR>
+xnoremap <silent> <Plug>JpTextObjctIxn <Cmd>call <SID>JpObject('x', 'i', v:count1)<CR>
+onoremap <silent> <Plug>JpTextObjctAon <Cmd>call <SID>JpObject('o', 'a', v:count1)<CR>
+xnoremap <silent> <Plug>JpTextObjctAxn <Cmd>call <SID>JpObject('x', 'a', v:count1)<CR>
 
 function! s:JpMoveW(cmd, count)
   let cmd = a:cmd
@@ -92,7 +92,7 @@ function! s:JpMoveW(cmd, count)
   let space = '[[:space:]　]'
   let spaceR = '[^[:space:]　]'
 
-  let regxp = '\(^'.space.'*\zs\)\|'.'\('.space.'\+\zs'.'\)'
+  let regxp = '\(^' . space . '*\zs\)\|' . '\(' . space . '\+\zs'.'\)'
   let regxp .= '\|\('.separator.'\+'.(!stop_sep ? '\zs' : '').'\)'
   let regxp .= stop_eol ? '\|$' : '\|[\r\n]\+[\r\n]\+'
   if cmd =~ '[nox]E'
@@ -105,12 +105,10 @@ function! s:JpMoveW(cmd, count)
     let regxp = '\('.space.'\+\zs\)\|'.'\('.spaceR.'\zs'.space.'\+'.'\)\|\('.separator.'\+\)'.'\|$'
   endif
   if cmd =~ 'x[WBE]'
-    normal! gv
     let lastPos = getpos('.')
     normal! o
     let firstPos = getpos('.')
     normal! o
-    normal! v
     call setpos('.', lastPos)
   endif
 
@@ -162,14 +160,7 @@ function! s:JpMoveW(cmd, count)
   endfor
   silent exe 'setlocal virtualedit='.saved_ve
 
-  if cmd =~ 'x[WBE]'
-    let nextPos = getpos('.')
-    call setpos('.', firstPos)
-    exe 'normal! v'
-    call setpos('.', nextPos)
-  endif
   if cmd == 'oE'
-    let char = matchstr(getline(lnum), '.', col-1)
     let char = matchstr(getline(lnum), '.', col+strlen(char)-1)
     if char !~ separator
       call cursor(lnum, col('.')+strlen(char))
