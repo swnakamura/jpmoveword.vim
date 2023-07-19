@@ -43,15 +43,15 @@ function! s:mpsobjectKeymap()
   endif
 endfunction
 
-onoremap <silent> <Plug>MatchPairsObjctIon :<C-U>call <SID>mpsobject('o', 'i', 'b')<CR>
-xnoremap <silent> <Plug>MatchPairsObjctIxn :<C-U>call <SID>mpsobject('x', 'i', 'b')<CR>
-onoremap <silent> <Plug>MatchPairsObjctAon :<C-U>call <SID>mpsobject('o', 'a', 'b')<CR>
-xnoremap <silent> <Plug>MatchPairsObjctAxn :<C-U>call <SID>mpsobject('x', 'a', 'b')<CR>
+onoremap <silent> <Plug>MatchPairsObjctIon <Cmd>call <SID>mpsobject('o', 'i', 'b')<CR>
+xnoremap <silent> <Plug>MatchPairsObjctIxn <Cmd>call <SID>mpsobject('x', 'i', 'b')<CR>
+onoremap <silent> <Plug>MatchPairsObjctAon <Cmd>call <SID>mpsobject('o', 'a', 'b')<CR>
+xnoremap <silent> <Plug>MatchPairsObjctAxn <Cmd>call <SID>mpsobject('x', 'a', 'b')<CR>
 let g:mps_jsep = '（:）,「:」,『:』,《:》,〈:〉,｛:｝,［:］,【:】,‘:’,“:”'
-onoremap <silent> <Plug>MatchPairsObjctIoj :<C-U>call <SID>mpsobject('o', 'i', 'b', g:mps_jsep)<CR>
-xnoremap <silent> <Plug>MatchPairsObjctIxj :<C-U>call <SID>mpsobject('x', 'i', 'b', g:mps_jsep)<CR>
-onoremap <silent> <Plug>MatchPairsObjctAoj :<C-U>call <SID>mpsobject('o', 'a', 'b', g:mps_jsep)<CR>
-xnoremap <silent> <Plug>MatchPairsObjctAxj :<C-U>call <SID>mpsobject('x', 'a', 'b', g:mps_jsep)<CR>
+onoremap <silent> <Plug>MatchPairsObjctIoj <Cmd>call <SID>mpsobject('o', 'i', 'b', g:mps_jsep)<CR>
+xnoremap <silent> <Plug>MatchPairsObjctIxj <Cmd>call <SID>mpsobject('x', 'i', 'b', g:mps_jsep)<CR>
+onoremap <silent> <Plug>MatchPairsObjctAoj <Cmd>call <SID>mpsobject('o', 'a', 'b', g:mps_jsep)<CR>
+xnoremap <silent> <Plug>MatchPairsObjctAxj <Cmd>call <SID>mpsobject('x', 'a', 'b', g:mps_jsep)<CR>
 
 function! s:mpsobject(mode, cmd, op, ...)
   let isVisual = a:mode =~ '[vsx]'

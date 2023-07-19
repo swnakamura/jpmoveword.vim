@@ -36,9 +36,9 @@ function! s:movewordKeymap()
   nmap <silent> e <Plug>EolMove_e
 endfunction
 
-nnoremap <silent> <Plug>EolMove_w :<C-U>call <SID>eolMove('w', v:count1)<CR>
-nnoremap <silent> <Plug>EolMove_b :<C-U>call <SID>eolMove('b', v:count1)<CR>
-nnoremap <silent> <Plug>EolMove_e :<C-U>call <SID>eolMove('e', v:count1)<CR>
+nnoremap <silent> <Plug>EolMove_w <Cmd>call <SID>eolMove('w', v:count1)<CR>
+nnoremap <silent> <Plug>EolMove_b <Cmd>call <SID>eolMove('b', v:count1)<CR>
+nnoremap <silent> <Plug>EolMove_e <Cmd>call <SID>eolMove('e', v:count1)<CR>
 
 function! s:eolMove(cmd, count)
   let eol = g:moveword_stop_eol
