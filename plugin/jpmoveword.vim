@@ -28,6 +28,9 @@ endif
 if !exists('jpmoveword_separator')
   let jpmoveword_separator = '、。'
 endif
+if !exists('jpmoveword_sentence_separator')
+  let jpmoveword_sentence_separator = '。'
+endif
 if !exists('jpmoveword_stop_separator')
   let jpmoveword_stop_separator = 0
 endif
@@ -49,6 +52,12 @@ function! s:jpmovewordKeymap()
   nmap <silent> E <Plug>JpMove_nE
   omap <silent> E <Plug>JpMove_oE
   xmap <silent> E <Plug>JpMove_xE
+  nmap <silent> ( <Plug>JpMove_nBO
+  omap <silent> ( <Plug>JpMove_oBO
+  xmap <silent> ( <Plug>JpMove_xBO
+  nmap <silent> ) <Plug>JpMove_nBC
+  omap <silent> ) <Plug>JpMove_oBC
+  xmap <silent> ) <Plug>JpMove_xBC
   omap <silent> iW <Plug>JpTextObjctIon
   xmap <silent> iW <Plug>JpTextObjctIxn
   omap <silent> aW <Plug>JpTextObjctAon
@@ -70,6 +79,12 @@ xnoremap <silent> <Plug>JpMove_xB <Cmd>call <SID>JpMoveW('xB', v:count1)<CR>
 nnoremap <silent> <Plug>JpMove_nE <Cmd>call <SID>JpMoveW('nE', v:count1)<CR>
 onoremap <silent> <Plug>JpMove_oE <Cmd>call <SID>JpMoveW('oE', v:count1)<CR>
 xnoremap <silent> <Plug>JpMove_xE <Cmd>call <SID>JpMoveW('xE', v:count1)<CR>
+nnoremap <silent> <Plug>JpMove_nBO <Cmd>call <SID>JpMoveS('nB', v:count1)<CR>
+onoremap <silent> <Plug>JpMove_oBO <Cmd>call <SID>JpMoveS('oB', v:count1)<CR>
+xnoremap <silent> <Plug>JpMove_xBO <Cmd>call <SID>JpMoveS('xB', v:count1)<CR>
+nnoremap <silent> <Plug>JpMove_nBC <Cmd>call <SID>JpMoveS('nW', v:count1)<CR>
+onoremap <silent> <Plug>JpMove_oBC <Cmd>call <SID>JpMoveS('oE', v:count1)<CR>
+xnoremap <silent> <Plug>JpMove_xBC <Cmd>call <SID>JpMoveS('xE', v:count1)<CR>
 
 onoremap <silent> <Plug>JpTextObjctIon <Cmd>call <SID>JpObject('o', 'i', v:count1)<CR>
 xnoremap <silent> <Plug>JpTextObjctIxn <Cmd>call <SID>JpObject('x', 'i', v:count1)<CR>
@@ -88,6 +103,100 @@ function! s:JpMoveW(cmd, count)
   else
     let separator = '['.g:jpmoveword_separator.']'
     let separatorR = '[^'.g:jpmoveword_separator.']'
+  endif
+  let space = '[[:space:]　]'
+  let spaceR = '[^[:space:]　]'
+
+  let regxp = '\(^' . space . '*\zs\)\|' . '\(' . space . '\+\zs'.'\)'
+  let regxp .= '\|\('.separator.'\+'.(!stop_sep ? '\zs' : '').'\)'
+  let regxp .= stop_eol ? '\|$' : '\|[\r\n]\+[\r\n]\+'
+  if cmd =~ '[nox]E'
+    let regxp = '\('.'\zs'.spaceR.space.'\+'.'\)\|\(\zs'.separatorR.separator.'\+\)'
+    let regxp .= (cmd =~ 'nE' ? '\|\zs.$' : '\|\zs$').'\|^$'
+  elseif cmd =~ '[nox]B'
+    let regxp = '\(^'.spaceR.'\)\|\('.space.'\+\zs'.'\)\|\('.separator.'\+\zs\)'
+    let regxp .= stop_eol ? '\|$' : ''
+  elseif cmd == 'oW' && v:operator == 'c'
+    let regxp = '\('.space.'\+\zs\)\|'.'\('.spaceR.'\zs'.space.'\+'.'\)\|\('.separator.'\+\)'.'\|$'
+  endif
+  if cmd =~ 'x[WBE]'
+    let lastPos = getpos('.')
+    normal! o
+    let firstPos = getpos('.')
+    normal! o
+    call setpos('.', lastPos)
+  endif
+
+  let saved_ve = &virtualedit
+  if stop_eol == 2
+    silent setlocal virtualedit-=onemore
+  endif
+  for i in range(cnt)
+    let [buf, lnum, col, off] = getpos('.')
+    let len = strlen(getline(lnum)) - strlen(matchstr(getline(lnum), '.$'))
+    let char = matchstr(getline(lnum), '.', col-1)
+    if cmd =~ '[nox]E'
+      let char = matchstr(getline(lnum), '.', col+strlen(char)-1)
+    elseif cmd =~ '[nox]B'
+      let char = matchstr(getline(lnum), '.', col-strlen(char)-1)
+    endif
+    if cmd =~ '[nox]B'
+      if char =~ separator && col < len+1 && stop_sep
+        if col == 1 && lnum != 1
+          call cursor(lnum-1, 1)
+          call cursor(line('.'), col('$'))
+          if stop_eol == 2
+            let char = matchstr(getline(line('.')), '.$')
+            call cursor(line('.'), col('$')-strlen(char))
+          endif
+        else
+          call cursor(lnum, col('.')-strlen(char))
+        endif
+        continue
+      endif
+    elseif len != 0 && col == len+1 && onemore
+      call cursor(line('.'), col('$'))
+      continue
+    elseif char =~ separator.'\+' && col < len+1
+      call cursor(lnum, col('.')+strlen(char))
+      if stop_sep
+        continue
+      endif
+    endif
+    let stopline = cmd =~ '[nox]B' ? line('.')-(line('.') != 1) : 0
+    let flags = cmd =~ '[nox]B' ? 'b' : ''.'W'
+    let flags .= a:count < 0 ? 'c' : ''
+    let pos = search(regxp, flags, stopline)
+    if pos == 0 && cmd =~ '[nox]B'
+      call cursor(line('.')-(line('.') != 1), '1')
+    elseif !stop_eol && col('.') == col('$')
+      let pos = search(regxp, flags, stopline)
+    endif
+  endfor
+  silent exe 'setlocal virtualedit='.saved_ve
+
+  if cmd == 'oE'
+    let char = matchstr(getline(lnum), '.', col+strlen(char)-1)
+    if char !~ separator
+      call cursor(lnum, col('.')+strlen(char))
+    endif
+  endif
+endfunction
+
+" This is a modified version of JpMoveW. The sole difference is that it uses
+" jpmoveword_sentence_separator instead of jpmoveword_separator.
+function! s:JpMoveS(cmd, count)
+  let cmd = a:cmd
+  let cnt = a:count > 0 ? a:count : 1
+  let stop_eol = g:jpmoveword_stop_eol
+  let stop_sep = g:jpmoveword_stop_separator
+  let onemore = &virtualedit =~ 'onemore' && stop_eol == 1
+  if g:jpmoveword_sentence_separator == ''
+    let separator = '$^'
+    let separatorR = '$^'
+  else
+    let separator = '['.g:jpmoveword_sentence_separator.']'
+    let separatorR = '[^'.g:jpmoveword_sentence_separator.']'
   endif
   let space = '[[:space:]　]'
   let spaceR = '[^[:space:]　]'
