@@ -52,12 +52,12 @@ function! s:jpmovewordKeymap()
   nmap <silent> E <Plug>JpMove_nE
   omap <silent> E <Plug>JpMove_oE
   xmap <silent> E <Plug>JpMove_xE
-  nmap <silent> ( <Plug>JpMove_nBO
-  omap <silent> ( <Plug>JpMove_oBO
-  xmap <silent> ( <Plug>JpMove_xBO
-  nmap <silent> ) <Plug>JpMove_nBC
-  omap <silent> ) <Plug>JpMove_oBC
-  xmap <silent> ) <Plug>JpMove_xBC
+  nmap <silent> ( <Plug>JpMove_nPO
+  omap <silent> ( <Plug>JpMove_oPO
+  xmap <silent> ( <Plug>JpMove_xPO
+  nmap <silent> ) <Plug>JpMove_nPC
+  omap <silent> ) <Plug>JpMove_oPC
+  xmap <silent> ) <Plug>JpMove_xPC
   omap <silent> iW <Plug>JpTextObjctIon
   xmap <silent> iW <Plug>JpTextObjctIxn
   omap <silent> aW <Plug>JpTextObjctAon
@@ -79,12 +79,12 @@ xnoremap <silent> <Plug>JpMove_xB <Cmd>call <SID>JpMoveW('xB', v:count1)<CR>
 nnoremap <silent> <Plug>JpMove_nE <Cmd>call <SID>JpMoveW('nE', v:count1)<CR>
 onoremap <silent> <Plug>JpMove_oE <Cmd>call <SID>JpMoveW('oE', v:count1)<CR>
 xnoremap <silent> <Plug>JpMove_xE <Cmd>call <SID>JpMoveW('xE', v:count1)<CR>
-nnoremap <silent> <Plug>JpMove_nBO <Cmd>call <SID>JpMoveS('nB', v:count1)<CR>
-onoremap <silent> <Plug>JpMove_oBO <Cmd>call <SID>JpMoveS('oB', v:count1)<CR>
-xnoremap <silent> <Plug>JpMove_xBO <Cmd>call <SID>JpMoveS('xB', v:count1)<CR>
-nnoremap <silent> <Plug>JpMove_nBC <Cmd>call <SID>JpMoveS('nW', v:count1)<CR>
-onoremap <silent> <Plug>JpMove_oBC <Cmd>call <SID>JpMoveS('oE', v:count1)<CR>
-xnoremap <silent> <Plug>JpMove_xBC <Cmd>call <SID>JpMoveS('xE', v:count1)<CR>
+nnoremap <silent> <Plug>JpMove_nPO <Cmd>call <SID>JpMoveS('nB', v:count1)<CR>
+onoremap <silent> <Plug>JpMove_oPO <Cmd>call <SID>JpMoveS('oB', v:count1)<CR>
+xnoremap <silent> <Plug>JpMove_xPO <Cmd>call <SID>JpMoveS('xB', v:count1)<CR>
+nnoremap <silent> <Plug>JpMove_nPC <Cmd>call <SID>JpMoveS('nW', v:count1)<CR>
+onoremap <silent> <Plug>JpMove_oPC <Cmd>call <SID>JpMoveS('oE', v:count1)<CR>
+xnoremap <silent> <Plug>JpMove_xPC <Cmd>call <SID>JpMoveS('xE', v:count1)<CR>
 
 onoremap <silent> <Plug>JpTextObjctIon <Cmd>call <SID>JpObject('o', 'i', v:count1)<CR>
 xnoremap <silent> <Plug>JpTextObjctIxn <Cmd>call <SID>JpObject('x', 'i', v:count1)<CR>
