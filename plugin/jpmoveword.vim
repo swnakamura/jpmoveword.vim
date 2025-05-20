@@ -111,7 +111,7 @@ function! s:JpMoveW(cmd, count)
   let regxp .= '\|\('.separator.'\+'.(!stop_sep ? '\zs' : '').'\)'
   let regxp .= stop_eol ? '\|$' : '\|[\r\n]\+[\r\n]\+'
   if cmd =~ '[nox]E'
-    let regxp = '\('.spaceR.'\zs'.space.'\+'.'\)\|\('.separatorR.'\zs'.separator.'\+'.'\)'
+    let regxp = '\('.'\zs'.spaceR.space.'\+'.'\)\|\('.separatorR.'\zs'.separator.'\+'.'\)'
     let regxp .= (cmd =~ 'nE' ? '\|\zs.$' : '\|\zs$').'\|^$'
   elseif cmd =~ '[nox]B'
     let regxp = '\(^'.spaceR.'\)\|\('.space.'\+\zs'.'\)\|\('.separator.'\+\zs\)'
